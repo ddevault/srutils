@@ -21,12 +21,12 @@ namespace srutil
                 Console.WriteLine("Invalid usage. See 'srutil help dupe' for more information.");
                 return;
             }
-            Console.WriteLine("Resetting {0} to default settings...", args[2]);
+            var from = reddit.GetSubreddit(args[1]);
+            var to = reddit.GetSubreddit(args[2]);
+            Console.WriteLine("Resetting {0} to default settings...", to.DisplayName);
             var reset = new Reset();
             reset.Execute(new[] { "reset", args[2], "all" }, reddit);
             // TODO: Better error handling
-            var from = reddit.GetSubreddit(args[1]);
-            var to = reddit.GetSubreddit(args[2]);
             Console.WriteLine("Copying {0} into {1}...", from.DisplayName, to.DisplayName);
 
             // Copy settings
