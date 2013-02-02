@@ -1,0 +1,3 @@
+[submodule "RedditSharp"]
+	path = RedditSharp
+	url = git://github.com/SirCmpwn/RedditSharp.git
