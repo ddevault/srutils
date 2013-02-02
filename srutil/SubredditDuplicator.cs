@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RedditSharp;
 
 namespace srutil
 {
@@ -12,7 +13,7 @@ namespace srutil
             return new[] { "dup", "dupe", "duplicate" };
         }
 
-        public void Execute(string[] args)
+        public void Execute(string[] args, Reddit reddit)
         {
             
         }

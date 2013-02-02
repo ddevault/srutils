@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Reflection;
+using RedditSharp;
 
 namespace srutil
 {
@@ -40,7 +42,30 @@ namespace srutil
                     return;
                 }
                 Console.WriteLine("Error: Operation \"" + args[0] + "\" not found.");
+                return;
             }
+            // Log into reddit
+            var reddit = new Reddit();
+            while (reddit.User == null)
+            {
+                Console.Write("Username: ");
+                var username = Console.ReadLine();
+                Console.Write("Password: ");
+                var password = ReadPassword();
+                try
+                {
+                    Console.WriteLine("Logging in...");
+                    reddit.LogIn(username, password);
+                }
+                catch (AuthenticationException e)
+                {
+                    Console.WriteLine("Incorrect login.");
+                }
+            }
+            // Execute command
+            var operationType = OperationTypes[args[0]];
+            var operation = (ISubredditOperation)Activator.CreateInstance(operationType);
+            operation.Execute(args, reddit);
         }
 
         private static void ShowHelp(string[] args)
@@ -67,6 +92,32 @@ namespace srutil
                 var instance = (ISubredditOperation)Activator.CreateInstance(OperationTypes[args[1]]);
                 instance.ShowHelp();
             }
+        }
+
+        public static string ReadPassword()
+        {
+            var passbits = new Stack<string>();
+            //keep reading
+            for (ConsoleKeyInfo cki = Console.ReadKey(true); cki.Key != ConsoleKey.Enter; cki = Console.ReadKey(true))
+            {
+                if (cki.Key == ConsoleKey.Backspace)
+                {
+                    //rollback the cursor and write a space so it looks backspaced to the user
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    Console.Write(" ");
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    passbits.Pop();
+                }
+                else
+                {
+                    Console.Write("*");
+                    passbits.Push(cki.KeyChar.ToString());
+                }
+            }
+            string[] pass = passbits.ToArray();
+            Array.Reverse(pass);
+            Console.Write(Environment.NewLine);
+            return string.Join(string.Empty, pass);
         }
     }
 }
