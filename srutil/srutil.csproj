@@ -47,7 +47,8 @@
     <Compile Include="ISubredditOperation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SubredditDuplicator.cs" />
+    <Compile Include="Duplicate.cs" />
+    <Compile Include="Reset.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -6,7 +6,7 @@ using RedditSharp;
 
 namespace srutil
 {
-    public class SubredditDuplicator : ISubredditOperation
+    public class Duplicate : ISubredditOperation
     {
         public string[] GetOperationNames()
         {
