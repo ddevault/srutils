@@ -3,6 +3,8 @@
 This is a tool for working with subreddits you moderate on [Reddit](http://reddit.com). It allows you to easily perform
 a variety of tasks, such as resetting your subreddit settings to defaults, or copying one subreddit to another.
 
+[Download Latest Version](http://sircmpwn.github.com/srutils/srutil.exe)
+
 ## How to use
 
 If you are on Linux or Mac, you will need to install [Mono](http://mono-project.com) to use this tool. Preface all commands
