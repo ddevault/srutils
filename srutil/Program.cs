@@ -34,6 +34,20 @@ namespace srutil
                 Console.WriteLine("Error: No operation specified. Use \"srutil help\" for more information.");
                 return;
             }
+            string username = null, password = null;
+            while (args[0].StartsWith("--"))
+            {
+                if (args[0] == "--username")
+                {
+                    username = args[1];
+                    args = args.Skip(2).ToArray();
+                }
+                else if (args[0] == "--password")
+                {
+                    password = args[1];
+                    args = args.Skip(2).ToArray();
+                }
+            }
             if (!OperationTypes.ContainsKey(args[0]))
             {
                 if (args[0] == "help")
@@ -48,10 +62,16 @@ namespace srutil
             var reddit = new Reddit();
             while (reddit.User == null)
             {
-                Console.Write("Username: ");
-                var username = Console.ReadLine();
-                Console.Write("Password: ");
-                var password = ReadPassword();
+                if (username == null)
+                {
+                    Console.Write("Username: ");
+                    username = Console.ReadLine();
+                }
+                if (password == null)
+                {
+                    Console.Write("Password: ");
+                    password = ReadPassword();
+                }
                 try
                 {
                     Console.WriteLine("Logging in...");
@@ -60,6 +80,7 @@ namespace srutil
                 catch (AuthenticationException e)
                 {
                     Console.WriteLine("Incorrect login.");
+                    username = password = null;
                 }
             }
             // Execute command
