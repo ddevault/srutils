@@ -69,6 +69,16 @@ namespace srutil
                     Console.CursorLeft = left; Console.CursorTop = top;
                     Console.WriteLine("{0}/{1}", progress++, styles.Images.Count);
                 }
+                // Save header
+                if (subreddit.HeaderImage != null)
+                {
+                    Console.WriteLine("Saving header image...");
+                    var data = webClient.DownloadData(subreddit.HeaderImage);
+                    entry = new ZipEntry("header" + Path.GetExtension(subreddit.HeaderImage));
+                    file.PutNextEntry(entry);
+                    file.Write(data, 0, data.Length);
+                    file.CloseEntry();
+                }
                 Console.WriteLine("Done. {0} backed up to {1}.", subreddit.DisplayName, args[2]);
             }
         }

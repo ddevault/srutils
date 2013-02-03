@@ -34,7 +34,6 @@ namespace srutil
             var settings = from.GetSettings();
             settings.Subreddit = to;
             settings.UpdateSettings();
-            Console.WriteLine("Done.");
 
             // Copy images
             Console.WriteLine("Copying images...");
@@ -51,19 +50,31 @@ namespace srutil
                 Console.CursorLeft = left; Console.CursorTop = top;
                 Console.WriteLine("{0}/{1}", progress++, stylesFrom.Images.Count);
             }
-            Console.WriteLine("Done.");
 
             // Copy styles
             Console.WriteLine("Copying styles...");
             styleTo.CSS = stylesFrom.CSS;
             styleTo.UpdateCss();
-            Console.WriteLine("Done.");
 
-            // Header
+            // Copy header image
             Console.WriteLine("Copying header image...");
             var headerImage = webClient.DownloadData(from.HeaderImage);
             to.UploadHeaderImage("header", ImageType.PNG, headerImage);
-            Console.WriteLine("Done.");
+
+            // Copy flair templates
+            var flair = from.GetUserFlairTemplates(); // TODO: Link flair
+            if (flair.Any())
+            {
+                Console.WriteLine("Copying user flair templates...");
+                left = Console.CursorLeft; top = Console.CursorTop;
+                progress = 1;
+                foreach (var item in flair)
+                {
+                    to.AddFlairTemplate(item.CssClass, FlairType.User, item.Text, true);
+                    Console.CursorLeft = left; Console.CursorTop = top;
+                    Console.WriteLine("{0}/{1}", progress++, stylesFrom.Images.Count);
+                }
+            }
 
             Console.WriteLine("Copied {0} to {1}.", from.DisplayName, to.DisplayName);
         }
