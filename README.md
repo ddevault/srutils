@@ -62,7 +62,7 @@ Backs up a subreddit's settings, styles, etc into a zip archive.
 
     srutil backup /r/example example.zip
 
-Includes settings, stylesheet, images, sidebar, and flair templates.
+Includes settings, stylesheet, images, header, sidebar, and flair templates.
 
 ### restore
 
@@ -70,4 +70,4 @@ Restores a subreddit from a backup zip archive.
 
     srutil restore /r/example example.zip
 
-Includes settings, stylesheet, images, sidebar, and flair templates.
+Includes settings, stylesheet, images, header, sidebar, and flair templates.

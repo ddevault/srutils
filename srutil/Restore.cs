@@ -18,8 +18,6 @@ namespace srutil
 
         public void Execute(string[] args, Reddit reddit)
         {
-            Console.WriteLine("This doesn't work yet");
-            return;
             if (args.Length != 3)
             {
                 Console.WriteLine("Invalid usage. See 'srutil help backup' for more information.");
@@ -39,7 +37,7 @@ namespace srutil
                     Console.WriteLine("{0} is not a valid subreddit backup.", args[2]);
                     return;
                 }
-                Console.WriteLine("Resetting {0} to default settings...");
+                Console.WriteLine("Resetting {0} to default settings...", subreddit.DisplayName);
                 var reset = new Reset();
                 reset.Execute(new[] { "reset", subreddit.DisplayName, "all" }, reddit);
                 foreach (ZipEntry entry in file)
@@ -56,14 +54,50 @@ namespace srutil
                     {
                         Console.WriteLine("Restoring settings...");
                         var stream = new StreamReader(file.GetInputStream(entry));
-                        settings = serializer.Deserialize<SubredditSettings>(new JsonTextReader(stream));
+                        serializer.Populate(new JsonTextReader(stream), settings);
                         settings.UpdateSettings();
                     }
                     else if (entry.Name == "flair.json") // TODO: Link flair templates, selected flair for users
                     {
-                        Console.WriteLine("Restoring user flair templates...");
+                        var stream = new StreamReader(file.GetInputStream(entry));
+                        var flair = serializer.Deserialize<UserFlairTemplate[]>(new JsonTextReader(stream));
+                        if (flair.Any())
+                        {
+                            Console.WriteLine("Restoring user flair templates...");
+                            int progress = 1;
+                            int left = Console.CursorLeft; int top = Console.CursorTop;
+                            foreach (var item in flair)
+                            {
+                                subreddit.AddFlairTemplate(item.CssClass, FlairType.User, item.Text, true);
+                                Console.CursorLeft = left; Console.CursorTop = top;
+                                Console.WriteLine("{0}/{1}", progress++, flair.Length);
+                            }
+                        }
+                    }
+                    else if (entry.Name == "header.png" || entry.Name == "header.jpg")
+                    {
+                        var image = Path.GetFileName(entry.Name);
+                        Console.WriteLine("Restoring header image...");
+                        var stream = file.GetInputStream(entry);
+                        var data = new byte[entry.Size];
+                        stream.Read(data, 0, (int)entry.Size);
+                        subreddit.UploadHeaderImage(entry.Name,
+                            Path.GetExtension(entry.Name) == "png" ? ImageType.PNG : ImageType.JPEG, data);
+                    }
+                    else if (entry.Name.StartsWith("images/"))
+                    {
+                        var image = Path.GetFileName(entry.Name);
+                        Console.WriteLine("Restoring image: " + image);
+                        var stream = file.GetInputStream(entry);
+                        var data = new byte[entry.Size];
+                        stream.Read(data, 0, (int)entry.Size);
+                        styles.UploadImage(Path.GetFileNameWithoutExtension(image),
+                            Path.GetExtension(image) == ".png" ? ImageType.PNG : ImageType.JPEG, data);
                     }
                 }
+                Console.WriteLine("Restoring CSS...");
+                styles.UpdateCss();
+                Console.WriteLine("Finished restoring {0}", subreddit.DisplayName);
             }
         }
 
