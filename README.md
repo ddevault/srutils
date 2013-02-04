@@ -4,6 +4,9 @@ This is a tool for working with subreddits you moderate on [Reddit](http://reddi
 a variety of tasks, such as resetting your subreddit settings to defaults, copying one subreddit to another, or taking
 backups of your subreddits.
 
+Subreddit Utilities is powered by [RedditSharp](https://github.com/SirCmpwn/RedditSharp), my .NET library for working
+with the Reddit API.
+
 [Download Latest Version](http://sircmpwn.github.com/srutils/srutil.exe)
 
 ## How to use
