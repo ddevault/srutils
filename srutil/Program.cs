@@ -47,6 +47,11 @@ namespace srutil
                     password = args[1];
                     args = args.Skip(2).ToArray();
                 }
+				else if (args[0] == "--domain")
+				{
+					Reddit.RootDomain = args[1];
+					args = args.Skip(2).ToArray();
+				}
             }
             if (!OperationTypes.ContainsKey(args[0]))
             {
