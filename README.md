@@ -7,8 +7,6 @@ backups of your subreddits.
 Subreddit Utilities is powered by [RedditSharp](https://github.com/SirCmpwn/RedditSharp), my .NET library for working
 with the Reddit API.
 
-[Download Latest Version](http://sircmpwn.github.com/srutils/srutil.exe)
-
 ## How to use
 
 If you are on Linux or Mac, you will need to install [Mono](http://mono-project.com) to use this tool. Preface all commands
